@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>動力機械群志願分析</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #F6F5F3;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #555;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tab-button {
+      background: #D6CEBE;
+      color: #333;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      margin: 0 5px;
+      border-radius: 5px 5px 0 0;
+    }
+    .tab-button:hover {
+      background: #C8C0B0;
+    }
+    .tab-button.active {
+      background: #AAA39E;
+      color: #fff;
+    }
+    .tab-content {
+      display: none;
+      border: 1px solid #AAA39E;
+      padding: 10px;
+      border-radius: 0 5px 5px 5px;
+      background: #FFF;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #CCC;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #EEE;
+    }
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+    tr:hover {
+      background: #f1f1f1;
+    }
+    .highlight {
+      color: red;
+      font-weight: bold;
+    }
+    .calculate-area {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .calculate-area input {
+      width: 60px;
+      padding: 5px;
+      margin: 0 5px;
+    }
+    .calculate-area button {
+      padding: 5px 10px;
+      background: #888;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .calculate-area button:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>動力機械群志願分析</h1>
+
+  <!-- 成績輸入區 -->
+  <div class="calculate-area">
+    國文: <input type="number" id="score-chinese" value="0" min="0" max="100">
+    英文: <input type="number" id="score-english" value="0" min="0" max="100">
+    數學: <input type="number" id="score-math" value="0" min="0" max="100">
+    專業(一): <input type="number" id="score-pro1" value="0" min="0" max="100">
+    專業(二): <input type="number" id="score-pro2" value="0" min="0" max="100">
+    <button id="calc-btn">計算</button>
+  </div>
+
+  <!-- 頁籤按鈕 -->
+  <div class="tabs">
+    <button class="tab-button active" data-tab="tab1">所有志願</button>
+    <button class="tab-button" data-tab="tab2">標紅志願</button>
+    <button class="tab-button" data-tab="tab3">其他志願</button>
+  </div>
+
+  <!-- 頁籤內容：頁籤一（全部資料） -->
+  <div id="tab1" class="tab-content active">
+    <table>
+      <tr>
+        <th>招生群(類)別</th><th>志願代碼</th><th>權重組別</th><th>學校名稱</th><th>系科組學程名稱</th>
+        <th>各科目加權</th><th>招生名額</th><th>錄取人數</th><th>錄取總分數</th><th>我的加權後分數</th><th>分數差異百分比</th>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02001</td><td>B19</td><td>國立雲林科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.50 + 專業(二)*2.50</td><td>3</td><td>3</td><td>635.25</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02002</td><td>B17</td><td>國立屏東科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50</td><td>26</td><td>26</td><td>454.75</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02003</td><td>B16</td><td>國立屏東科技大學</td><td>生物機電工程系</td>
+        <td>國文*1.00 + 英文*2.00 + 數學*1.00 + 專業(一)*2.50 + 專業(二)*2.50</td><td>8</td><td>8</td><td>446.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02004</td><td>B??</td><td>國立臺北科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.50 + 專業(二)*2.50</td><td>11</td><td>11</td><td>589.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02005</td><td>B??</td><td>國立高雄科技大學</td><td>環境與安全衛生工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>4</td><td>4</td><td>423.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02006</td><td>B??</td><td>國立高雄科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>530.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02007</td><td>B??</td><td>國立高雄科技大學</td><td>機械工程系智能系統與控制組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>520.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02008</td><td>B??</td><td>國立高雄科技大學</td><td>機電工程系精密機械組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>441.25</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02009</td><td>B??</td><td>國立高雄科技大學</td><td>機電工程系智慧自動化組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>7</td><td>7</td><td>485.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02010</td><td>B??</td><td>國立高雄科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>14</td><td>14</td><td>430.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02011</td><td>B??</td><td>國立高雄科技大學</td><td>電子工程系</td>
+        <td>國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>1</td><td>1</td><td>550.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02012</td><td>B??</td><td>國立高雄科技大學</td><td>電腦與通訊工程系</td>
+        <td>國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>3</td><td>3</td><td>490.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02013</td><td>B??</td><td>國立高雄科技大學</td><td>造船及海洋工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>7</td><td>7</td><td>400.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02014</td><td>B??</td><td>國立高雄科技大學</td><td>航運技術系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02015</td><td>B??</td><td>國立高雄科技大學</td><td>輪機工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>9</td><td>9</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02016</td><td>B??</td><td>國立虎尾科技大學</td><td>動力機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>6</td><td>6</td><td>450.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02017</td><td>B??</td><td>國立虎尾科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>16</td><td>16</td><td>420.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02018</td><td>B??</td><td>國立虎尾科技大學</td><td>飛機工程系機械組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>9</td><td>9</td><td>470.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02019</td><td>B??</td><td>國立澎湖科技大學</td><td>資訊工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02020</td><td>B??</td><td>國立澎湖科技大學</td><td>電信工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>370.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02021</td><td>B??</td><td>國立勤益科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>10</td><td>10</td><td>520.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02022</td><td>B??</td><td>國立勤益科技大學</td><td>智慧自動化工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>500.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02023</td><td>B??</td><td>國立臺中科技大學</td><td>智慧生產工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>480.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02024</td><td>B??</td><td>朝陽科技大學</td><td>航空機械系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>430.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02025</td><td>B??</td><td>南臺科技大學</td><td>機械工程系自動化控制組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>7</td><td>7</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02026</td><td>B??</td><td>南臺科技大學</td><td>機械工程系先進車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>26</td><td>26</td><td>395.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02027</td><td>B??</td><td>南臺科技大學</td><td>電子工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02028</td><td>B??</td><td>崑山科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>420.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02029</td><td>B??</td><td>崑山科技大學</td><td>機械工程系智慧車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>4</td><td>4</td><td>400.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02030</td><td>B??</td><td>崑山科技大學</td><td>電機工程系</td>
+        <td>國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>1</td><td>1</td><td>450.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02031</td><td>B??</td><td>嘉南藥理大學</td><td>公共安全及消防系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>360.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02032</td><td>B??</td><td>龍華科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>8</td><td>8</td><td>450.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02033</td><td>B??</td><td>輔英科技大學</td><td>環境工程與科學系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>350.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02034</td><td>B??</td><td>明新科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02035</td><td>B??</td><td>健行科技大學</td><td>土木工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02036</td><td>B??</td><td>健行科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02037</td><td>B??</td><td>健行科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02038</td><td>B??</td><td>健行科技大學</td><td>工業管理系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02039</td><td>B??</td><td>健行科技大學</td><td>行銷與流通管理系運動行銷組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02040</td><td>B??</td><td>正修科技大學</td><td>電子工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>330.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02041</td><td>B??</td><td>正修科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>5</td><td>5</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02042</td><td>B??</td><td>正修科技大學</td><td>工業工程與管理系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>310.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02043</td><td>B??</td><td>正修科技大學</td><td>企業管理系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>320.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02044</td><td>B??</td><td>正修科技大學</td><td>資訊管理系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02045</td><td>B??</td><td>萬能科技大學</td><td>航空光機電系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>340.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02046</td><td>B??</td><td>萬能科技大學</td><td>精密機械與工業工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>340.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02047</td><td>B??</td><td>萬能科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>8</td><td>8</td><td>370.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02048</td><td>B??</td><td>建國科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02049</td><td>B??</td><td>建國科技大學</td><td>機械工程系先進車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>390.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02050</td><td>B??</td><td>建國科技大學</td><td>運動健康與休閒系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>360.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02051</td><td>B??</td><td>明志科技大學</td><td>機械工程系車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>8</td><td>8</td><td>520.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02052</td><td>B??</td><td>明志科技大學</td><td>電機工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>480.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02053</td><td>B??</td><td>台鋼科技大學</td><td>電機工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*3.00</td><td>4</td><td>4</td><td>400.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02054</td><td>B??</td><td>台鋼科技大學</td><td>機械與自動化工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*3.00</td><td>3</td><td>3</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02055</td><td>B??</td><td>大仁科技大學</td><td>環境與職業安全衛生系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>280.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02056</td><td>B??</td><td>嶺東科技大學</td><td>資訊科技系網路管理與雲端應用組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>330.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02057</td><td>B??</td><td>嶺東科技大學</td><td>智慧製造科技系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>350.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02058</td><td>B??</td><td>中信科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02059</td><td>B??</td><td>東南科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02060</td><td>B??</td><td>東南科技大學</td><td>機械工程系車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>320.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02061</td><td>B??</td><td>南開科技大學</td><td>自動化工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02062</td><td>B??</td><td>南開科技大學</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>11</td><td>11</td><td>360.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02063</td><td>B??</td><td>中華科技大學</td><td>航空機械系航空維修組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02064</td><td>B??</td><td>中華科技大學</td><td>航空機械系精密機械組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>370.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02065</td><td>B??</td><td>僑光科技大學</td><td>機械與電腦輔助工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>310.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02066</td><td>B??</td><td>吳鳳科技大學</td><td>人工智慧無人機科技系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>5</td><td>5</td><td>330.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02067</td><td>B??</td><td>吳鳳科技大學</td><td>機械與智慧製造工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>8</td><td>8</td><td>340.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02068</td><td>B??</td><td>吳鳳科技大學</td><td>電機工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02069</td><td>B??</td><td>修平科技大學</td><td>機械工程系智慧車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>320.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02070</td><td>B??</td><td>修平科技大學</td><td>智慧車輛系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>310.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02071</td><td>B??</td><td>敏實科技大學</td><td>智慧車輛與能源系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>4</td><td>4</td><td>350.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02072</td><td>B??</td><td>敏實科技大學</td><td>智慧製造工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>2</td><td>2</td><td>330.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02073</td><td>B??</td><td>臺北城市科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02074</td><td>B??</td><td>臺北城市科技大學</td><td>機械工程系車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>405.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02075</td><td>B??</td><td>宏國德霖科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>1</td><td>1</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02076</td><td>B??</td><td>亞東科技大學</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>3</td><td>3</td><td>400.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02077</td><td>B??</td><td>亞東科技大學</td><td>機械工程系汽車組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>14</td><td>14</td><td>380.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02078</td><td>B??</td><td>亞東科技大學</td><td>電機工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>2</td><td>2</td><td>430.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02079</td><td>B??</td><td>亞東科技大學</td><td>電子工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>1</td><td>1</td><td>420.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02080</td><td>B??</td><td>亞東科技大學</td><td>通訊工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>1</td><td>1</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02081</td><td>B??</td><td>南亞技術學院</td><td>機械工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>3</td><td>3</td><td>300.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02082</td><td>B??</td><td>南亞技術學院</td><td>機械工程系車輛工程組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00</td><td>6</td><td>6</td><td>320.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02083</td><td>B??</td><td>黎明技術學院</td><td>電機工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*2.50</td><td>10</td><td>10</td><td>410.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02084</td><td>B??</td><td>黎明技術學院</td><td>車輛工程系</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*2.50</td><td>4</td><td>4</td><td>390.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02085</td><td>B??</td><td>國立臺東專科學校</td><td>動力機械科車輛組</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50</td><td>13</td><td>13</td><td>375.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02086</td><td>B??</td><td>國立臺東專科學校</td><td>園藝暨景觀科</td>
+        <td>國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50</td><td>6</td><td>6</td><td>350.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02087</td><td>B??</td><td>國立臺灣師範大學</td><td>車輛與能源工程學士學位學程</td>
+        <td>國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>8</td><td>8</td><td>600.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02088</td><td>B??</td><td>國立彰化師範大學</td><td>智慧車輛工程學系</td>
+        <td>國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00</td><td>4</td><td>4</td><td>570.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02089</td><td>B??</td><td>國立宜蘭大學</td><td>機械與機電工程學系</td>
+        <td>國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50</td><td>8</td><td>8</td><td>480.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02090</td><td>B??</td><td>國立宜蘭大學</td><td>生物機電工程學系</td>
+        <td>國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50</td><td>2</td><td>2</td><td>460.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02091</td><td>B??</td><td>國立聯合大學</td><td>機械工程學系</td>
+        <td>國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50</td><td>7</td><td>7</td><td>500.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+      <tr>
+        <td>02動力機械群</td><td>02099</td><td>B8</td><td>國立金門大學</td><td>電機工程學系</td>
+        <td>國文*1.50 + 英文*1.50 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*3.00</td><td>6</td><td>6</td><td>375.00</td>
+        <td class="calc"></td><td class="calc"></td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 頁籤內容：頁籤二（標紅資料） -->
+  <div id="tab2" class="tab-content">
+    <table>
+      <tr>
+        <th>招生群(類)別</th><th>志願代碼</th><th>權重組別</th><th>學校名稱</th><th>系科組學程名稱</th>
+        <th>各科目加權</th><th>招生名額</th><th>錄取人數</th><th>錄取總分數</th><th>我的加權後分數</th><th>分數差異百分比</th>
+      </tr>
+      <!-- 計算後動態插入符合條件的資料（依分數差異百分比排序） -->
+    </table>
+  </div>
+
+  <!-- 頁籤內容：頁籤三（其他資料） -->
+  <div id="tab3" class="tab-content">
+    <table>
+      <tr>
+        <th>招生群(類)別</th><th>志願代碼</th><th>權重組別</th><th>學校名稱</th><th>系科組學程名稱</th>
+        <th>各科目加權</th><th>招生名額</th><th>錄取人數</th><th>錄取總分數</th><th>我的加權後分數</th><th>分數差異百分比</th>
+      </tr>
+      <!-- 計算後動態插入其餘資料（依分數差異百分比排序） -->
+    </table>
+  </div>
+
+  <script>
+    // 將志願資料作為 JavaScript 陣列物件
+    var programs = [
+      {"group":"02動力機械群","code":"02001","weight_group":"B19","school":"國立雲林科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.50 + 專業(二)*2.50","quota":3,"admitted":3,"last_score":635.25},
+      {"group":"02動力機械群","code":"02002","weight_group":"B17","school":"國立屏東科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50","quota":26,"admitted":26,"last_score":454.75},
+      {"group":"02動力機械群","code":"02003","weight_group":"B16","school":"國立屏東科技大學","dept":"生物機電工程系","weights":"國文*1.00 + 英文*2.00 + 數學*1.00 + 專業(一)*2.50 + 專業(二)*2.50","quota":8,"admitted":8,"last_score":446.00},
+      {"group":"02動力機械群","code":"02004","weight_group":"B??","school":"國立臺北科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.50 + 專業(二)*2.50","quota":11,"admitted":11,"last_score":589.00},
+      {"group":"02動力機械群","code":"02005","weight_group":"B??","school":"國立高雄科技大學","dept":"環境與安全衛生工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":4,"admitted":4,"last_score":423.00},
+      {"group":"02動力機械群","code":"02006","weight_group":"B??","school":"國立高雄科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":530.00},
+      {"group":"02動力機械群","code":"02007","weight_group":"B??","school":"國立高雄科技大學","dept":"機械工程系智能系統與控制組","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":520.00},
+      {"group":"02動力機械群","code":"02008","weight_group":"B??","school":"國立高雄科技大學","dept":"機電工程系精密機械組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":441.25},
+      {"group":"02動力機械群","code":"02009","weight_group":"B??","school":"國立高雄科技大學","dept":"機電工程系智慧自動化組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":7,"admitted":7,"last_score":485.00},
+      {"group":"02動力機械群","code":"02010","weight_group":"B??","school":"國立高雄科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":14,"admitted":14,"last_score":430.00},
+      {"group":"02動力機械群","code":"02011","weight_group":"B??","school":"國立高雄科技大學","dept":"電子工程系","weights":"國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":1,"admitted":1,"last_score":550.00},
+      {"group":"02動力機械群","code":"02012","weight_group":"B??","school":"國立高雄科技大學","dept":"電腦與通訊工程系","weights":"國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":3,"admitted":3,"last_score":490.00},
+      {"group":"02動力機械群","code":"02013","weight_group":"B??","school":"國立高雄科技大學","dept":"造船及海洋工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":7,"admitted":7,"last_score":400.00},
+      {"group":"02動力機械群","code":"02014","weight_group":"B??","school":"國立高雄科技大學","dept":"航運技術系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":380.00},
+      {"group":"02動力機械群","code":"02015","weight_group":"B??","school":"國立高雄科技大學","dept":"輪機工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":9,"admitted":9,"last_score":410.00},
+      {"group":"02動力機械群","code":"02016","weight_group":"B??","school":"國立虎尾科技大學","dept":"動力機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":6,"admitted":6,"last_score":450.00},
+      {"group":"02動力機械群","code":"02017","weight_group":"B??","school":"國立虎尾科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":16,"admitted":16,"last_score":420.00},
+      {"group":"02動力機械群","code":"02018","weight_group":"B??","school":"國立虎尾科技大學","dept":"飛機工程系機械組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":9,"admitted":9,"last_score":470.00},
+      {"group":"02動力機械群","code":"02019","weight_group":"B??","school":"國立澎湖科技大學","dept":"資訊工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":380.00},
+      {"group":"02動力機械群","code":"02020","weight_group":"B??","school":"國立澎湖科技大學","dept":"電信工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":370.00},
+      {"group":"02動力機械群","code":"02021","weight_group":"B??","school":"國立勤益科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":10,"admitted":10,"last_score":520.00},
+      {"group":"02動力機械群","code":"02022","weight_group":"B??","school":"國立勤益科技大學","dept":"智慧自動化工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":500.00},
+      {"group":"02動力機械群","code":"02023","weight_group":"B??","school":"國立臺中科技大學","dept":"智慧生產工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":480.00},
+      {"group":"02動力機械群","code":"02024","weight_group":"B??","school":"朝陽科技大學","dept":"航空機械系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":430.00},
+      {"group":"02動力機械群","code":"02025","weight_group":"B??","school":"南臺科技大學","dept":"機械工程系自動化控制組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":7,"admitted":7,"last_score":410.00},
+      {"group":"02動力機械群","code":"02026","weight_group":"B??","school":"南臺科技大學","dept":"機械工程系先進車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":26,"admitted":26,"last_score":395.00},
+      {"group":"02動力機械群","code":"02027","weight_group":"B??","school":"南臺科技大學","dept":"電子工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":380.00},
+      {"group":"02動力機械群","code":"02028","weight_group":"B??","school":"崑山科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":420.00},
+      {"group":"02動力機械群","code":"02029","weight_group":"B??","school":"崑山科技大學","dept":"機械工程系智慧車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":4,"admitted":4,"last_score":400.00},
+      {"group":"02動力機械群","code":"02030","weight_group":"B??","school":"崑山科技大學","dept":"電機工程系","weights":"國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":1,"admitted":1,"last_score":450.00},
+      {"group":"02動力機械群","code":"02031","weight_group":"B??","school":"嘉南藥理大學","dept":"公共安全及消防系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":360.00},
+      {"group":"02動力機械群","code":"02032","weight_group":"B??","school":"龍華科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":8,"admitted":8,"last_score":450.00},
+      {"group":"02動力機械群","code":"02033","weight_group":"B??","school":"輔英科技大學","dept":"環境工程與科學系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":350.00},
+      {"group":"02動力機械群","code":"02034","weight_group":"B??","school":"明新科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":410.00},
+      {"group":"02動力機械群","code":"02035","weight_group":"B??","school":"健行科技大學","dept":"土木工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02036","weight_group":"B??","school":"健行科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02037","weight_group":"B??","school":"健行科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02038","weight_group":"B??","school":"健行科技大學","dept":"工業管理系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02039","weight_group":"B??","school":"健行科技大學","dept":"行銷與流通管理系運動行銷組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02040","weight_group":"B??","school":"正修科技大學","dept":"電子工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":330.00},
+      {"group":"02動力機械群","code":"02041","weight_group":"B??","school":"正修科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":5,"admitted":5,"last_score":380.00},
+      {"group":"02動力機械群","code":"02042","weight_group":"B??","school":"正修科技大學","dept":"工業工程與管理系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":310.00},
+      {"group":"02動力機械群","code":"02043","weight_group":"B??","school":"正修科技大學","dept":"企業管理系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":320.00},
+      {"group":"02動力機械群","code":"02044","weight_group":"B??","school":"正修科技大學","dept":"資訊管理系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02045","weight_group":"B??","school":"萬能科技大學","dept":"航空光機電系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":340.00},
+      {"group":"02動力機械群","code":"02046","weight_group":"B??","school":"萬能科技大學","dept":"精密機械與工業工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":340.00},
+      {"group":"02動力機械群","code":"02047","weight_group":"B??","school":"萬能科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":8,"admitted":8,"last_score":370.00},
+      {"group":"02動力機械群","code":"02048","weight_group":"B??","school":"建國科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":410.00},
+      {"group":"02動力機械群","code":"02049","weight_group":"B??","school":"建國科技大學","dept":"機械工程系先進車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":390.00},
+      {"group":"02動力機械群","code":"02050","weight_group":"B??","school":"建國科技大學","dept":"運動健康與休閒系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":360.00},
+      {"group":"02動力機械群","code":"02051","weight_group":"B??","school":"明志科技大學","dept":"機械工程系車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":8,"admitted":8,"last_score":520.00},
+      {"group":"02動力機械群","code":"02052","weight_group":"B??","school":"明志科技大學","dept":"電機工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":480.00},
+      {"group":"02動力機械群","code":"02053","weight_group":"B??","school":"台鋼科技大學","dept":"電機工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*3.00","quota":4,"admitted":4,"last_score":400.00},
+      {"group":"02動力機械群","code":"02054","weight_group":"B??","school":"台鋼科技大學","dept":"機械與自動化工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*3.00","quota":3,"admitted":3,"last_score":380.00},
+      {"group":"02動力機械群","code":"02055","weight_group":"B??","school":"大仁科技大學","dept":"環境與職業安全衛生系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":280.00},
+      {"group":"02動力機械群","code":"02056","weight_group":"B??","school":"嶺東科技大學","dept":"資訊科技系網路管理與雲端應用組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":330.00},
+      {"group":"02動力機械群","code":"02057","weight_group":"B??","school":"嶺東科技大學","dept":"智慧製造科技系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":350.00},
+      {"group":"02動力機械群","code":"02058","weight_group":"B??","school":"中信科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02059","weight_group":"B??","school":"東南科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02060","weight_group":"B??","school":"東南科技大學","dept":"機械工程系車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":320.00},
+      {"group":"02動力機械群","code":"02061","weight_group":"B??","school":"南開科技大學","dept":"自動化工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02062","weight_group":"B??","school":"南開科技大學","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":11,"admitted":11,"last_score":360.00},
+      {"group":"02動力機械群","code":"02063","weight_group":"B??","school":"中華科技大學","dept":"航空機械系航空維修組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":380.00},
+      {"group":"02動力機械群","code":"02064","weight_group":"B??","school":"中華科技大學","dept":"航空機械系精密機械組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":370.00},
+      {"group":"02動力機械群","code":"02065","weight_group":"B??","school":"僑光科技大學","dept":"機械與電腦輔助工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":310.00},
+      {"group":"02動力機械群","code":"02066","weight_group":"B??","school":"吳鳳科技大學","dept":"人工智慧無人機科技系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":5,"admitted":5,"last_score":330.00},
+      {"group":"02動力機械群","code":"02067","weight_group":"B??","school":"吳鳳科技大學","dept":"機械與智慧製造工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":8,"admitted":8,"last_score":340.00},
+      {"group":"02動力機械群","code":"02068","weight_group":"B??","school":"吳鳳科技大學","dept":"電機工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":300.00},
+      {"group":"02動力機械群","code":"02069","weight_group":"B??","school":"修平科技大學","dept":"機械工程系智慧車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":320.00},
+      {"group":"02動力機械群","code":"02070","weight_group":"B??","school":"修平科技大學","dept":"智慧車輛系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":310.00},
+      {"group":"02動力機械群","code":"02071","weight_group":"B??","school":"敏實科技大學","dept":"智慧車輛與能源系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":4,"admitted":4,"last_score":350.00},
+      {"group":"02動力機械群","code":"02072","weight_group":"B??","school":"敏實科技大學","dept":"智慧製造工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":2,"admitted":2,"last_score":330.00},
+      {"group":"02動力機械群","code":"02073","weight_group":"B??","school":"臺北城市科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":410.00},
+      {"group":"02動力機械群","code":"02074","weight_group":"B??","school":"臺北城市科技大學","dept":"機械工程系車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":405.00},
+      {"group":"02動力機械群","code":"02075","weight_group":"B??","school":"宏國德霖科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":1,"admitted":1,"last_score":300.00},
+      {"group":"02動力機械群","code":"02076","weight_group":"B??","school":"亞東科技大學","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":3,"admitted":3,"last_score":400.00},
+      {"group":"02動力機械群","code":"02077","weight_group":"B??","school":"亞東科技大學","dept":"機械工程系汽車組","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":14,"admitted":14,"last_score":380.00},
+      {"group":"02動力機械群","code":"02078","weight_group":"B??","school":"亞東科技大學","dept":"電機工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":2,"admitted":2,"last_score":430.00},
+      {"group":"02動力機械群","code":"02079","weight_group":"B??","school":"亞東科技大學","dept":"電子工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":1,"admitted":1,"last_score":420.00},
+      {"group":"02動力機械群","code":"02080","weight_group":"B??","school":"亞東科技大學","dept":"通訊工程系","weights":"國文*1.00 + 英文*1.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":1,"admitted":1,"last_score":410.00},
+      {"group":"02動力機械群","code":"02081","weight_group":"B??","school":"南亞技術學院","dept":"機械工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":3,"admitted":3,"last_score":300.00},
+      {"group":"02動力機械群","code":"02082","weight_group":"B??","school":"南亞技術學院","dept":"機械工程系車輛工程組","weights":"國文*1.00 + 英文*1.00 + 數學*1.00 + 專業(一)*2.00 + 專業(二)*2.00","quota":6,"admitted":6,"last_score":320.00},
+      {"group":"02動力機械群","code":"02083","weight_group":"B??","school":"黎明技術學院","dept":"電機工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*2.50","quota":10,"admitted":10,"last_score":410.00},
+      {"group":"02動力機械群","code":"02084","weight_group":"B??","school":"黎明技術學院","dept":"車輛工程系","weights":"國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*2.50","quota":4,"admitted":4,"last_score":390.00},
+      {"group":"02動力機械群","code":"02085","weight_group":"B??","school":"國立臺東專科學校","dept":"動力機械科車輛組","weights":"國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50","quota":13,"admitted":13,"last_score":375.00},
+      {"group":"02動力機械群","code":"02086","weight_group":"B??","school":"國立臺東專科學校","dept":"園藝暨景觀科","weights":"國文*1.00 + 英文*1.00 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50","quota":6,"admitted":6,"last_score":350.00},
+      {"group":"02動力機械群","code":"02087","weight_group":"B??","school":"國立臺灣師範大學","dept":"車輛與能源工程學士學位學程","weights":"國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":8,"admitted":8,"last_score":600.00},
+      {"group":"02動力機械群","code":"02088","weight_group":"B??","school":"國立彰化師範大學","dept":"智慧車輛工程學系","weights":"國文*1.00 + 英文*2.00 + 數學*2.00 + 專業(一)*3.00 + 專業(二)*3.00","quota":4,"admitted":4,"last_score":570.00},
+      {"group":"02動力機械群","code":"02089","weight_group":"B??","school":"國立宜蘭大學","dept":"機械與機電工程學系","weights":"國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50","quota":8,"admitted":8,"last_score":480.00},
+      {"group":"02動力機械群","code":"02090","weight_group":"B??","school":"國立宜蘭大學","dept":"生物機電工程學系","weights":"國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50","quota":2,"admitted":2,"last_score":460.00},
+      {"group":"02動力機械群","code":"02091","weight_group":"B??","school":"國立聯合大學","dept":"機械工程學系","weights":"國文*1.00 + 英文*1.50 + 數學*1.50 + 專業(一)*2.50 + 專業(二)*2.50","quota":7,"admitted":7,"last_score":500.00},
+      {"group":"02動力機械群","code":"02099","weight_group":"B8","school":"國立金門大學","dept":"電機工程學系","weights":"國文*1.50 + 英文*1.50 + 數學*1.50 + 專業(一)*3.00 + 專業(二)*3.00","quota":6,"admitted":6,"last_score":375.00}
+    ];
+
+    // 切換頁籤功能
+    var tabButtons = document.querySelectorAll('.tab-button');
+    var tabContents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var target = this.getAttribute('data-tab');
+        // 顯示對應的頁籤內容，隱藏其他
+        tabContents.forEach(function(tc) {
+          tc.classList.toggle('active', tc.id === target);
+        });
+        // 突顯選取的頁籤按鈕
+        tabButtons.forEach(function(b) {
+          b.classList.toggle('active', b === btn);
+        });
+      });
+    });
+
+    // 計算「我的加權後分數」的函式
+    function computeMyScore(prog, scores) {
+      // 分割各科目加權字串並取出數值部分
+      var parts = prog.weights.split('+');
+      var weightVals = parts.map(function(p) {
+        var idx = p.indexOf('*');
+        return (idx >= 0) ? parseFloat(p.substring(idx + 1)) : 0;
+      });
+      // 假設順序固定為 [國文, 英文, 數學, 專業(一), 專業(二)]
+      var [wC, wE, wM, wP1, wP2] = weightVals;
+      // 計算加權總分
+      return wC * scores.chinese + wE * scores.english + wM * scores.math + wP1 * scores.pro1 + wP2 * scores.pro2;
+    }
+
+    // 點擊「計算」按鈕事件：計算加權分數與差異百分比
+    document.getElementById('calc-btn').addEventListener('click', function() {
+      // 取得使用者輸入的各科分數
+      var scores = {
+        chinese: parseFloat(document.getElementById('score-chinese').value) || 0,
+        english: parseFloat(document.getElementById('score-english').value) || 0,
+        math: parseFloat(document.getElementById('score-math').value) || 0,
+        pro1: parseFloat(document.getElementById('score-pro1').value) || 0,
+        pro2: parseFloat(document.getElementById('score-pro2').value) || 0
+      };
+      // 更新頁籤一表格中的每一行數據
+      var tab1Rows = document.querySelectorAll('#tab1 table tr');
+      for (var i = 1; i < tab1Rows.length; i++) {  // 跳過表頭
+        var prog = programs[i - 1];
+        var myScore = computeMyScore(prog, scores);
+        var cells = tab1Rows[i].querySelectorAll('td');
+        var lastScore = prog.last_score;
+        var diffPercent = null;
+        if (lastScore > 0) {
+          diffPercent = ((myScore - lastScore) / lastScore) * 100;
+        }
+        cells[cells.length - 2].textContent = myScore.toFixed(2);
+        cells[cells.length - 1].textContent = (diffPercent !== null) ? diffPercent.toFixed(2) + '%' : '--';
+        // 標紅判斷與設定
+        if (diffPercent !== null && diffPercent >= -5) {
+          cells[cells.length - 2].classList.add('highlight');
+          cells[cells.length - 1].classList.add('highlight');
+        } else {
+          cells[cells.length - 2].classList.remove('highlight');
+          cells[cells.length - 1].classList.remove('highlight');
+        }
+      }
+      // 準備標紅志願與其他志願的列表
+      var markedPrograms = [];
+      var otherPrograms = [];
+      programs.forEach(function(prog) {
+        var myScore = computeMyScore(prog, scores);
+        var lastScore = prog.last_score;
+        var diffPercent = null;
+        if (lastScore > 0) {
+          diffPercent = ((myScore - lastScore) / lastScore) * 100;
+        }
+        var entry = {
+          group: prog.group,
+          code: prog.code,
+          weight_group: prog.weight_group,
+          school: prog.school,
+          dept: prog.dept,
+          weights: prog.weights,
+          quota: prog.quota,
+          admitted: prog.admitted,
+          last_score: prog.last_score,
+          my_score: myScore,
+          diff_percent: diffPercent
+        };
+        if (diffPercent !== null && diffPercent >= -5) {
+          markedPrograms.push(entry);
+        } else {
+          otherPrograms.push(entry);
+        }
+      });
+      // 依分數差異百分比對兩個列表進行排序（由高到低）
+      markedPrograms.sort(function(a, b) {
+        return (b.diff_percent || -Infinity) - (a.diff_percent || -Infinity);
+      });
+      otherPrograms.sort(function(a, b) {
+        return (b.diff_percent || -Infinity) - (a.diff_percent || -Infinity);
+      });
+      // 重新渲染頁籤二表格內容
+      var tab2Table = document.querySelector('#tab2 table');
+      tab2Table.innerHTML = tab2Table.rows[0].outerHTML;  // 保留表頭，清空其他列
+      markedPrograms.forEach(function(entry) {
+        var row = tab2Table.insertRow(-1);
+        row.insertCell(0).textContent = entry.group;
+        row.insertCell(1).textContent = entry.code;
+        row.insertCell(2).textContent = entry.weight_group;
+        row.insertCell(3).textContent = entry.school;
+        row.insertCell(4).textContent = entry.dept;
+        row.insertCell(5).textContent = entry.weights;
+        row.insertCell(6).textContent = entry.quota;
+        row.insertCell(7).textContent = entry.admitted;
+        row.insertCell(8).textContent = (entry.last_score) ? entry.last_score.toFixed(2) : '--';
+        var myCell = row.insertCell(9);
+        myCell.textContent = entry.my_score.toFixed(2);
+        var diffCell = row.insertCell(10);
+        diffCell.textContent = (entry.diff_percent !== null) ? entry.diff_percent.toFixed(2) + '%' : '--';
+        if (entry.diff_percent !== null && entry.diff_percent >= -5) {
+          myCell.classList.add('highlight');
+          diffCell.classList.add('highlight');
+        }
+      });
+      // 重新渲染頁籤三表格內容
+      var tab3Table = document.querySelector('#tab3 table');
+      tab3Table.innerHTML = tab3Table.rows[0].outerHTML;
+      otherPrograms.forEach(function(entry) {
+        var row = tab3Table.insertRow(-1);
+        row.insertCell(0).textContent = entry.group;
+        row.insertCell(1).textContent = entry.code;
+        row.insertCell(2).textContent = entry.weight_group;
+        row.insertCell(3).textContent = entry.school;
+        row.insertCell(4).textContent = entry.dept;
+        row.insertCell(5).textContent = entry.weights;
+        row.insertCell(6).textContent = entry.quota;
+        row.insertCell(7).textContent = entry.admitted;
+        row.insertCell(8).textContent = (entry.last_score) ? entry.last_score.toFixed(2) : '--';
+        var myCell = row.insertCell(9);
+        myCell.textContent = entry.my_score.toFixed(2);
+        var diffCell = row.insertCell(10);
+        diffCell.textContent = (entry.diff_percent !== null) ? entry.diff_percent.toFixed(2) + '%' : '--';
+        // 即使屬於其他志願，仍檢查是否符合標紅條件（通常不會符合，保險起見）
+        if (entry.diff_percent !== null && entry.diff_percent >= -5) {
+          myCell.classList.add('highlight');
+          diffCell.classList.add('highlight');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
